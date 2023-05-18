@@ -3,15 +3,29 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import PageTitle from "../PageTitle";
 import { serverList } from "../DummyData";
+import { useCallback, useState } from "react";
+import { RefreshControl } from "react-native";
 
 export default function ServerList() {
 
     const router = useRouter();
 
+    const [refreshing, setRefreshing] = useState(false);
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 2000);
+    }, []);
+
     return <FlatList
         data={serverList}
         keyExtractor={(item) => item.id.toString()}
         ListHeaderComponent={<PageTitle icon="dns" title="Server List" />}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         renderItem={({ item }) => {
             return <Pressable onPress={() => { router.push(`serverInfo/${item.id}`)}}>
                 {({ isPressed }) => (
