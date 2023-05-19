@@ -5,12 +5,14 @@ import PageTitle from "../PageTitle";
 import { serverList } from "../DummyData";
 import { useCallback, useState } from "react";
 import { RefreshControl } from "react-native";
-import { SwipeListView } from "react-native-swipe-list-view";
+import { RowMap, SwipeListView } from "react-native-swipe-list-view";
 import ServerInfo from "../../interfaces/ServerInfo";
 
 export default function ServerList() {
 
     const router = useRouter();
+
+    const [listData, setListData] = useState(serverList);
 
     const [refreshing, setRefreshing] = useState(false);
     const onRefresh = useCallback(() => {
@@ -20,21 +22,21 @@ export default function ServerList() {
         }, 2000);
     }, []);
 
-    const closeRow = (rowMap, rowKey) => {
+    const closeRow = (rowMap: RowMap<any>, rowKey: number) => {
         if (rowMap[rowKey]) {
             rowMap[rowKey].closeRow();
         }
     };
 
-    const deleteRow = (rowMap, rowKey) => {
+    const deleteRow = (rowMap: RowMap<any>, rowKey: number) => {
         closeRow(rowMap, rowKey);
         const newData = [...listData];
-        const prevIndex = listData.findIndex(item => item.key === rowKey);
+        const prevIndex = listData.findIndex(item => item.id === rowKey);
         newData.splice(prevIndex, 1);
         setListData(newData);
     };
 
-    const onRowDidOpen = rowKey => {
+    const onRowDidOpen = (rowKey: string) => {
         console.log('This row opened', rowKey);
     };
 
@@ -94,7 +96,7 @@ export default function ServerList() {
             ml="auto"
             bg="red.500"
             justifyContent="center"
-            onPress={() => closeRow(rowMap, data.item.key)}
+            onPress={() => deleteRow(rowMap, data.item.key)}
             _pressed={{
                 opacity: 0.5
             }}
@@ -112,7 +114,7 @@ export default function ServerList() {
 
     return (
             <SwipeListView
-                data={serverList}
+                data={listData}
                 keyExtractor={(item) => item.id.toString()}
                 ListHeaderComponent={<PageTitle icon="dns" title="Server List" />}
                 showsVerticalScrollIndicator={false}
