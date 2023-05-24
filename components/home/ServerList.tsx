@@ -58,10 +58,17 @@ export default function ServerList() {
 
     const deleteRow = (rowMap: RowMap<any>, rowKey: number) => {
         closeRow(rowMap, rowKey);
-        const newData = [...listData];
+        const newData:ServerInfo[] = [...listData];
         const prevIndex = listData.findIndex(item => item.id === rowKey);
         newData.splice(prevIndex, 1);
         setListData(newData);
+        
+        try{
+            AsyncStorage.setItem("serverList", JSON.stringify(newData));
+            console.log("Server deleted");
+        } catch (error) {
+            console.error(error)
+        }
     };
 
     const onRowDidOpen = (rowKey: string) => {
