@@ -3,10 +3,10 @@ import AppBar from "../../components/AppBar";
 import PageTitle from "../../components/PageTitle";
 import { MaterialIcons, Ionicons, Entypo, AntDesign } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
-import ServerConfig from "../../interfaces/ServerConfig";
 import ToastAlert from "../../components/ToastAlert";
 import { useRouter } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ServerInfo from "../../interfaces/ServerInfo";
 
 
 export default function NewServerInfo() {
@@ -14,10 +14,10 @@ export default function NewServerInfo() {
     const router = useRouter();
     const [showToast, setShowToast] = useState(false);
 
-    const [serverConfig, setServerConfig] = useState<ServerConfig>({
+    const [serverConfig, setServerConfig] = useState<ServerInfo>({
         name: "",
         ip: "",
-        port: 25565,
+        port: "25565",
         username: "",
         password: ""
     });
@@ -32,7 +32,7 @@ export default function NewServerInfo() {
         let invalidFields: string[] = [];
         if (serverConfig.name === "") invalidFields.push("name");
         if (serverConfig.ip === "") invalidFields.push("ip");
-        if (serverConfig.port === 0) invalidFields.push("port");
+        if (serverConfig.port === "") invalidFields.push("port");
         if (serverConfig.username === "") invalidFields.push("username");
         if (serverConfig.password === "") invalidFields.push("password");
 
@@ -44,7 +44,7 @@ export default function NewServerInfo() {
         // save to async storage
         try {
             console.log("Saving config to the server")
-            let serverConfigs: ServerConfig[] = [];
+            let serverConfigs: ServerInfo[] = [];
             const serverConfigsString = await AsyncStorage.getItem("serverList");
             if (serverConfigsString === null) {
                 serverConfigs = [];
@@ -122,7 +122,7 @@ export default function NewServerInfo() {
                                         defaultValue="25565"
                                         keyboardType="numeric"
                                         value={serverConfig.port.toString()}
-                                        onChangeText={(value) => { setServerConfig({ ...serverConfig, port: parseInt(value) }) }}
+                                        onChangeText={(value) => { setServerConfig({ ...serverConfig, port: value }) }}
                                     />
                                     <FormControl.ErrorMessage leftIcon={<Icon as={MaterialIcons} name="error" size="xs" />}>
                                         Please enter a port.

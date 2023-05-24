@@ -1,5 +1,5 @@
 export default interface PlayerInfo {
-    id: number;
+    id?: number;
     name: string;
     icon: string,
 }

@@ -2,7 +2,6 @@ import { Box, FlatList, HStack, Icon, Image, Pressable, Text, VStack, View } fro
 import { MaterialIcons, Ionicons, Entypo } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import PageTitle from "../PageTitle";
-import { serverList } from "../DummyData";
 import { useCallback, useEffect, useState } from "react";
 import { RefreshControl } from "react-native";
 import { RowMap, SwipeListView } from "react-native-swipe-list-view";
@@ -62,7 +61,7 @@ export default function ServerList() {
         const prevIndex = listData.findIndex(item => item.id === rowKey);
         newData.splice(prevIndex, 1);
         setListData(newData);
-        
+
         try{
             AsyncStorage.setItem("serverList", JSON.stringify(newData));
             console.log("Server deleted");
@@ -76,7 +75,13 @@ export default function ServerList() {
     };
 
     const renderItem = ({ item }: { item: ServerInfo }) => {
-        return <Pressable onPress={() => { router.push(`serverInfo/${item.id}`) }} bg="blueGray.200">
+
+        const onPress = () => {
+            console.log("Server selected", item.id)
+            router.push(`serverInfo/${item.id}`);
+        }
+
+        return <Pressable onPress={onPress} bg="blueGray.200">
             {({ isPressed }) => (
                 <Box
                     rounded="xl"
@@ -150,7 +155,7 @@ export default function ServerList() {
     return (
         <SwipeListView
             data={listData}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item, index) => index.toString()}
             ListHeaderComponent={<PageTitle icon="dns" title="Server List" />}
             showsVerticalScrollIndicator={false}
             refreshControl={

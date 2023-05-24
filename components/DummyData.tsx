@@ -116,4 +116,4 @@ const playerList: PlayerInfo[] = [
     },
 ]
 
-export { serverList, playerList };
+export { serverList, playerList, sampleIcon };
