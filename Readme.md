@@ -14,3 +14,4 @@ This project uses the following tech:
 - Expo Route
 - NativeBase
 - https://github.com/Abhinandan-Kushwaha/react-native-gifted-charts
+- @react-native-async-storage/async-storage

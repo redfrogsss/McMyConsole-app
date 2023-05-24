@@ -3,21 +3,49 @@ import { MaterialIcons, Ionicons, Entypo } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import PageTitle from "../PageTitle";
 import { serverList } from "../DummyData";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { RefreshControl } from "react-native";
 import { RowMap, SwipeListView } from "react-native-swipe-list-view";
 import ServerInfo from "../../interfaces/ServerInfo";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ServerList() {
 
     const router = useRouter();
 
-    const [listData, setListData] = useState(serverList);
-
+    const [listData, setListData] = useState<ServerInfo[]>([]);
     const [refreshing, setRefreshing] = useState(false);
+
+    const loadServerList = async () => {
+        console.log("Fetching server list...")
+        const serverList = await AsyncStorage.getItem("serverList");
+        if (serverList == null) {
+            await AsyncStorage.setItem("serverList", JSON.stringify([]));
+            setListData([]);
+        } else {
+            let list = JSON.parse(serverList);
+            // add id for key extractor
+            list = list.map((item: ServerInfo, index: number) => {
+                item.id = index;
+                return item;
+            });
+
+            setListData(list);
+        }
+    }
+
+    // fetch serverlist from async storage when app launch
+    useEffect(()=>{
+        onRefresh();
+    }, []);
+
+    // debug
+    useEffect(() => { console.log("listData", listData) }, [listData]);
+
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        setTimeout(() => {
+        setTimeout(async () => {
+            await loadServerList();
             setRefreshing(false);
         }, 2000);
     }, []);
@@ -113,22 +141,21 @@ export default function ServerList() {
     </HStack>;
 
     return (
-            <SwipeListView
-                data={listData}
-                keyExtractor={(item) => item.id.toString()}
-                ListHeaderComponent={<PageTitle icon="dns" title="Server List" />}
-                showsVerticalScrollIndicator={false}
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
-                renderItem={renderItem}
-                renderHiddenItem={renderHiddenItem}
-                rightOpenValue={-90}
-                previewRowKey={'0'}
-                previewOpenValue={-40}
-                previewOpenDelay={3000}
-                onRowOpen={onRowDidOpen}
-            />
+        <SwipeListView
+            data={listData}
+            keyExtractor={(item) => item.id.toString()}
+            ListHeaderComponent={<PageTitle icon="dns" title="Server List" />}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            renderItem={renderItem}
+            renderHiddenItem={renderHiddenItem}
+            rightOpenValue={-90}
+            previewRowKey={'0'}
+            previewOpenValue={-40}
+            previewOpenDelay={3000}
+            onRowOpen={onRowDidOpen}
+        />
     )
-
 }
