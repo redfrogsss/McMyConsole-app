@@ -110,6 +110,36 @@ export default function ServerInfoScreen() {
         }, 2000);
     }, []);
 
+    const shutdownHandler = async () => {
+        try {
+            await axios.get(`http://${serverInfo.ip}:${serverInfo.port}/shutdown`);
+            Toast.show({
+                title: "Server is shutting down.",
+            });
+            setTimeout(()=>{
+                router.push("/");
+            }, 3000);
+            
+        } catch (error: any) {
+
+            if (error.response) {
+                // The server responded with an error status code (e.g. 404 Not Found)
+                console.error(`Server responded with status code ${error.response.status}: ${error.response.data}`);
+            } else if (error.request) {
+                // The request was made but no response was received (e.g. a network error)
+                console.error(`No response received: ${error.request}`);
+            } else {
+                // Something else happened while setting up the request
+                console.error(`Error setting up request: ${error.message}`);
+            }
+
+            Toast.show({
+                title: "Something went wrong. Please try again later.",
+            });
+
+        }
+    }
+
     useEffect(()=>{
         // check if id is valid
         if(!id){
@@ -153,9 +183,9 @@ export default function ServerInfoScreen() {
                         </HStack>
                     </HStack>
                     <HStack justifyContent="space-between" py="4">
-                        <Pressable onPress={() => { }} mx="auto">
+                        <Pressable onPress={() => { shutdownHandler() }} mx="auto">
                             <Icon as={MaterialIcons} name="stop" size="lg" color="blueGray.700" mx="auto" />
-                            <Text>Stop</Text>
+                            <Text>Shutdown</Text>
                         </Pressable>
                         <Pressable onPress={() => { }} mx="auto">
                             <Icon as={MaterialIcons} name="monitor" size="lg" color="blueGray.700" mx="auto" />
