@@ -1,11 +1,22 @@
-import { Box, Fab, HStack, Icon, NativeBaseProvider, Text, View, } from 'native-base';
+import { Box, Fab, HStack, Icon, NativeBaseProvider, Text, Toast, View, } from 'native-base';
 import AppBar from './../components/AppBar';
 import ServerList from '../components/home/ServerList';
 import { MaterialIcons, Ionicons, Entypo, AntDesign } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect } from 'react';
 
 export default function Home() {
     const router = useRouter();
+
+    const { toast } = useLocalSearchParams();
+
+    useEffect(()=>{
+        if (toast){
+            Toast.show({
+                title: toast,
+            })
+        }
+    }, [toast]);
 
     return <NativeBaseProvider>
         <View

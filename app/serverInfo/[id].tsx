@@ -30,6 +30,23 @@ export default function ServerInfoScreen() {
 
     const [refreshing, setRefreshing] = useState(false);
 
+    // test server connection
+    const testServerConnection = (ip = "", port = "") => {
+        return new Promise(async (res, rej) => {
+            if (ip == "" || port == "") { rej(new Error("IP or Port is empty.")) }; 
+
+            let address = `http://${ip}:${port}/test`;
+
+            try {
+                console.log(`Testing server connection at ${address}`)
+                await axios.get(address);
+                res(true);
+            } catch (error) {
+                router.push({pathname: "/", params: {toast: "Server is not responding."}})
+            }
+        });
+    }
+
     // get server info from async storage
     const loadServerInfo = async () => {
         return new Promise<ServerInfo>(async (res, rej)=>{
@@ -56,13 +73,19 @@ export default function ServerInfoScreen() {
 
     // fetch server data 
     const fetchServerData = async (ip = "", port = "") => {
+        const serverAddress = `http://${ip}:${port}`;
+        let address = `${serverAddress}`;
         return new Promise(async (res, rej) => {
             try {
                 if (ip == "" || port == "") {
                     return;
                 }
-                let address = `http://${ip}:${port}/player`;
-                // console.log(`fetching server data via ${address} ...`)
+                // test server connection
+                console.log(`passing ${ip} and ${port} to testServerConnection`)
+                await testServerConnection(ip, port);
+
+                // fetch player data 
+                address = `${serverAddress}/player`;
                 let playerListRawData = await axios.get(address);
 
                 let playerListData: PlayerInfo[] = playerListRawData.data.playerList.map((player: any) => {
@@ -74,7 +97,6 @@ export default function ServerInfoScreen() {
                 });
 
                 setPlayersData(playerListData);
-                // console.log("playerListData", playerListData);
                 res(playerListData);
             } catch (error: any) {
                 if (error.response) {
@@ -89,9 +111,10 @@ export default function ServerInfoScreen() {
                 }
 
                 Toast.show({
-                    title: "Something went wrong.",
+                    title: "Something went wrong. Please try again later.",
                 });
-
+                
+                router.push({ pathname: "/", params: { toast: "Something went wrong. Please try again later." } })
                 rej(error);
             }
         });
