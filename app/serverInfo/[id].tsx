@@ -97,7 +97,6 @@ export default function ServerInfoScreen() {
         });
     }
 
-
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         // console.log("serverInfo in refresh", serverInfo);
@@ -204,7 +203,7 @@ export default function ServerInfoScreen() {
                             <FlatList
                                 data={playersData}
                                 keyExtractor={(item, index) => index.toString()}
-                                renderItem={({ item }) => <PlayerListItem player={item} />}
+                                renderItem={({ item }) => <PlayerListItem player={item} serverAddress={`http://${serverInfo.ip}:${serverInfo.port}`} onRefresh={onRefresh}/>}
                                 ItemSeparatorComponent={() => (
                                     <Divider my="2" _light={{
                                         bg: "blueGray.600"
