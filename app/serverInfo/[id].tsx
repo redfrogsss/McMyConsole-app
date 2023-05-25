@@ -76,7 +76,7 @@ export default function ServerInfoScreen() {
                 setPlayersData(playerListData);
                 // console.log("playerListData", playerListData);
                 res(playerListData);
-            } catch (error) {
+            } catch (error: any) {
                 if (error.response) {
                     // The server responded with an error status code (e.g. 404 Not Found)
                     console.error(`Server responded with status code ${error.response.status}: ${error.response.data}`);

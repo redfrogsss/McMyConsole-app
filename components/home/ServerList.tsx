@@ -3,7 +3,7 @@ import { MaterialIcons, Ionicons, Entypo } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import PageTitle from "../PageTitle";
 import { useCallback, useEffect, useState } from "react";
-import { RefreshControl } from "react-native";
+import { ListRenderItemInfo, RefreshControl } from "react-native";
 import { RowMap, SwipeListView } from "react-native-swipe-list-view";
 import ServerInfo from "../../interfaces/ServerInfo";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -55,11 +55,11 @@ export default function ServerList() {
         }
     };
 
-    const deleteRow = (rowMap: RowMap<any>, rowKey: number) => {
-        closeRow(rowMap, rowKey);
+    const deleteRow = (rowMap: RowMap<ServerInfo>, rowKey: ServerInfo) => {
         const newData:ServerInfo[] = [...listData];
-        const prevIndex = listData.findIndex(item => item.id === rowKey);
+        const prevIndex = listData.findIndex(item => item == rowKey);
         newData.splice(prevIndex, 1);
+        closeRow(rowMap, prevIndex);
         setListData(newData);
 
         try{
@@ -130,13 +130,13 @@ export default function ServerList() {
         </Pressable>
     }
 
-    const renderHiddenItem = (data: any, rowMap: any) => <HStack flex="1" pl="2">
+    const renderHiddenItem = (data: ListRenderItemInfo<ServerInfo>, rowMap: RowMap<ServerInfo>) => <HStack flex="1" pl="2">
         <Pressable
             w="70"
             ml="auto"
             bg="red.500"
             justifyContent="center"
-            onPress={() => deleteRow(rowMap, data.item.key)}
+            onPress={() => deleteRow(rowMap, data.item)}
             _pressed={{
                 opacity: 0.5
             }}
