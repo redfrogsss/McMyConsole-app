@@ -200,19 +200,25 @@ export default function ServerInfoScreen() {
                             rounded="xl"
                             p="4"
                         >
-                            <FlatList
-                                data={playersData}
-                                keyExtractor={(item, index) => index.toString()}
-                                renderItem={({ item }) => <PlayerListItem player={item} serverAddress={`http://${serverInfo.ip}:${serverInfo.port}`} onRefresh={onRefresh}/>}
-                                ItemSeparatorComponent={() => (
-                                    <Divider my="2" _light={{
-                                        bg: "blueGray.600"
-                                    }} _dark={{
-                                        bg: "blueGray.50"
-                                    }} />
-                                )}
-                                scrollEnabled={false}
-                            />
+                            {playersData.length > 0 ? (
+                                <FlatList
+                                    data={playersData}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item }) => <PlayerListItem player={item} serverAddress={`http://${serverInfo.ip}:${serverInfo.port}`} onRefresh={onRefresh} />}
+                                    ItemSeparatorComponent={() => (
+                                        <Divider my="2" _light={{
+                                            bg: "blueGray.600"
+                                        }} _dark={{
+                                            bg: "blueGray.50"
+                                        }} />
+                                    )}
+                                    scrollEnabled={false}
+                                />
+                            ) : (
+                                <HStack justifyContent="center" py="2">
+                                    <Text>No players online</Text>
+                                </HStack>
+                            )}
                         </Box>
                     </View>
                 </View>
