@@ -15,6 +15,8 @@ export default function Home() {
             Toast.show({
                 title: toast,
             })
+            // clear toast
+            router.push({pathname: "/", params: {toast: undefined}})
         }
     }, [toast]);
 
