@@ -39,9 +39,11 @@ export default function ServerInfoScreen() {
 
             try {
                 console.log(`Testing server connection at ${address}`)
-                await axios.get(address);
+                await axios.get(address, {timeout: 10000});
+                console.log(`Server is responding at ${address}`)
                 res(true);
             } catch (error) {
+                console.error(`Server is not responding at ${address}`)
                 router.push({pathname: "/", params: {toast: "Server is not responding."}})
             }
         });
@@ -172,8 +174,11 @@ export default function ServerInfoScreen() {
             });
         }
 
+        setRefreshing(true);
         loadServerInfo().then((info)=>{
-            fetchServerData(info.ip, info.port);
+            fetchServerData(info.ip, info.port).then(()=>{
+                setRefreshing(false);
+            });
         });
     }, []);
 
