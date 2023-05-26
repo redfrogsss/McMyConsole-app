@@ -93,7 +93,7 @@ export default function ServerInfoScreen() {
                 let playerListData: PlayerInfo[] = playerListRawData.data.playerList.map((player: any) => {
                     let playerInfo: PlayerInfo = {
                         name: player,
-                        icon: sampleIcon
+                        icon: `https://minotar.net/avatar/${player}/64` ?? sampleIcon
                     }
                     return playerInfo;
                 });
