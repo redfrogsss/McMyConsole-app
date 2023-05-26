@@ -1,5 +1,5 @@
 import { useRouter, useSearchParams } from "expo-router";
-import { NativeBaseProvider, Text, Heading, Toast, View, Image, HStack, IconButton, Icon, Pressable, Box, Divider, FlatList, ScrollView } from "native-base";
+import { NativeBaseProvider, Text, Heading, Toast, View, Image, HStack, IconButton, Icon, Pressable, Box, Divider, FlatList, ScrollView, VStack } from "native-base";
 import AppBar from "../../components/AppBar";
 import { useCallback, useEffect, useState } from "react";
 import PageTitle from "../../components/PageTitle";
@@ -10,7 +10,9 @@ import { RefreshControl } from "react-native";
 import ServerInfo from "../../interfaces/ServerInfo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import PlayerInfo from "../../interfaces/PlayerInfo";
-import axios from "axios";
+import axios, { Axios, AxiosResponse } from "axios";
+import PieChart from "react-native-pie-chart";
+import ServerStatus from "../../interfaces/ServerStatus";
 
 export default function ServerInfoScreen() {
     const params = useSearchParams();
@@ -27,6 +29,12 @@ export default function ServerInfoScreen() {
     });
 
     const [playersData, setPlayersData] = useState<PlayerInfo[]>(playerList);
+    const [serverStatus, setServerStatus] = useState<ServerStatus>({
+        tps: [1,1,1],
+        currenetMemory: 1,
+        freeMemory: 1,
+        maxMemory: 1,
+    })
 
     const [refreshing, setRefreshing] = useState(false);
 
@@ -99,6 +107,15 @@ export default function ServerInfoScreen() {
                 });
 
                 setPlayersData(playerListData);
+
+                // fetch server status
+                address = `${serverAddress}/serverStatus`;
+                let statusRawData: AxiosResponse<ServerStatus> = await axios.get(address);
+                console.log(statusRawData.data);
+                
+                let statusData: ServerStatus = statusRawData.data;
+                setServerStatus(statusData);
+
                 res(playerListData);
             } catch (error: any) {
                 if (error.response) {
@@ -187,6 +204,20 @@ export default function ServerInfoScreen() {
         console.log("serverInfo", serverInfo);
      }, [serverInfo]);
 
+    const getRamUsage = () => {
+        const series = [serverStatus.currentMemory, serverStatus.freeMemory];
+        const sliceColor = ['#0284c7', '#0c4a6e']
+        return {series, sliceColor};
+    }
+    
+    const getTPS = () => {
+        console.log("tps", serverStatus.tps[0].toFixed(2));
+        
+        const series = [Number(serverStatus.tps[0].toFixed(2)), 20 - Number(serverStatus.tps[0].toFixed(1))];
+        const sliceColor = ['#0284c7', '#0c4a6e']
+        return {series, sliceColor};
+    }
+
     return <NativeBaseProvider>
         <View
             flex={1}
@@ -239,8 +270,30 @@ export default function ServerInfoScreen() {
                             p="4"
                         >
                             <HStack justifyContent="space-between">
-                                <Text>CPU</Text>
-                                <Text>RAM</Text>
+                                <VStack w="50%">
+                                    <View mx="auto">
+                                    <PieChart
+                                        widthAndHeight={125}
+                                        series={getTPS().series}
+                                        sliceColor={getTPS().sliceColor}
+                                        coverRadius={0.45}
+                                        coverFill={'#FFF'}
+                                    />
+                                    </View>
+                                    <Text mx="auto" my="1">TPS: {serverStatus.tps[0].toFixed(1)} / 20.0</Text>
+                                </VStack>
+                                <VStack w="50%">
+                                    <View mx="auto">
+                                        <PieChart
+                                            widthAndHeight={125}
+                                            series={getRamUsage().series}
+                                            sliceColor={getRamUsage().sliceColor}
+                                            coverRadius={0.45}
+                                            coverFill={'#FFF'}
+                                        />
+                                    </View>
+                                    <Text mx="auto" my="1">RAM: {serverStatus.currentMemory} MB / {serverStatus.maxMemory} MB</Text>
+                                </VStack>
                             </HStack>
                         </Box>
                     </View>
