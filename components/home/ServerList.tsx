@@ -1,4 +1,4 @@
-import { Box, FlatList, HStack, Icon, Image, Pressable, Text, VStack, View } from "native-base";
+import { Box, FlatList, HStack, Icon, Image, Pressable, Text, Toast, VStack, View } from "native-base";
 import { MaterialIcons, Ionicons, Entypo } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import PageTitle from "../PageTitle";
@@ -7,6 +7,9 @@ import { ListRenderItemInfo, RefreshControl } from "react-native";
 import { RowMap, SwipeListView } from "react-native-swipe-list-view";
 import ServerInfo from "../../interfaces/ServerInfo";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { testServerConnection } from "../../utils";
+import axios from "axios";
+import { sampleIcon } from "../DummyData";
 
 export default function ServerList() {
 
@@ -16,26 +19,68 @@ export default function ServerList() {
     const [refreshing, setRefreshing] = useState(false);
 
     const loadServerList = async () => {
-        console.log("Fetching server list...")
-        const serverList = await AsyncStorage.getItem("serverList");
-        if (serverList == null) {
-            await AsyncStorage.setItem("serverList", JSON.stringify([]));
-            setListData([]);
-        } else {
-            let list = JSON.parse(serverList);
-            // add id for key extractor
-            list = list.map((item: ServerInfo, index: number) => {
-                item.id = index;
-                return item;
-            });
+        return new Promise<ServerInfo[]>(async (res, rej) => {
+            try {
+                const serverList = await AsyncStorage.getItem("serverList");
+                if (serverList == null) {
+                    await AsyncStorage.setItem("serverList", JSON.stringify([]));
+                    res([]);
+                } else {
+                    let list = JSON.parse(serverList);
+                    // add id for key extractor
+                    list = list.map((item: ServerInfo, index: number) => {
+                        item.id = index;
+                        return item;
+                    });
 
-            setListData(list);
+                    res(list);
+                }
+            } catch (error) {
+                rej(error);
+            }
+        })
+    }
+
+    const fetchServerData = async () => {
+        let list = await loadServerList()
+        setListData(list);
+
+        // show refresh indicator
+        setRefreshing(true);
+
+        // test connection
+        for (let i = 0; i < list.length; i++) {
+            let item = list[i];
+            try {
+                await testServerConnection(item.ip, item.port);
+                item.status = "online";
+
+                let serverInfoData = await axios.get(`http://${item.ip}:${item.port}/serverInfo`); 
+                item.activePlayers = serverInfoData.data.activePlayers;
+                item.totalPlayers = serverInfoData.data.totalPlayers;
+                item.version = serverInfoData.data.version;
+                item.icon = serverInfoData.data.icon? "data:image/png;base64," + serverInfoData.data.icon : sampleIcon;
+                item.uptime = serverInfoData.data.uptime;
+                
+            } catch (error) {
+                item.status = "offline";
+                item.activePlayers = "0";
+                item.totalPlayers = "0";
+                item.version = "0.0.0";
+                item.uptime = "0h";
+            }
         }
+
+        setListData(list);
+
+        // hide refresh indicator
+        setRefreshing(false);
     }
 
     // fetch serverlist from async storage when app launch
-    useEffect(()=>{
-        onRefresh();
+    useEffect(() => {
+        // onRefresh();
+        fetchServerData();
     }, []);
 
     // debug
@@ -44,7 +89,7 @@ export default function ServerList() {
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         setTimeout(async () => {
-            await loadServerList();
+            await fetchServerData();
             setRefreshing(false);
         }, 2000);
     }, []);
@@ -56,13 +101,13 @@ export default function ServerList() {
     };
 
     const deleteRow = (rowMap: RowMap<ServerInfo>, rowKey: ServerInfo) => {
-        const newData:ServerInfo[] = [...listData];
+        const newData: ServerInfo[] = [...listData];
         const prevIndex = listData.findIndex(item => item == rowKey);
         newData.splice(prevIndex, 1);
         closeRow(rowMap, prevIndex);
         setListData(newData);
 
-        try{
+        try {
             AsyncStorage.setItem("serverList", JSON.stringify(newData));
             console.log("Server deleted");
         } catch (error) {
@@ -78,7 +123,30 @@ export default function ServerList() {
 
         const onPress = () => {
             console.log("Server selected", item.id)
-            router.push(`serverInfo/${item.id}`);
+            if(item.status === "online") {
+                router.push(`serverInfo/${item.id}`);
+            } else {
+                Toast.show({
+                    title: "Server is offline.",
+                })
+            }
+        }
+
+        const showStatus = () => {
+
+            if (item.status === undefined) {
+                return (
+                    <Icon size="sm" as={MaterialIcons} name="signal-cellular-null" color="green.500" my="auto" />
+                );
+            } else if (item.status === "online") {
+                return (
+                    <Icon size="sm" as={MaterialIcons} name="signal-cellular-alt" color="green.500" my="auto" />
+                );
+            } else {
+                return (
+                    <Icon size="sm" as={MaterialIcons} name="signal-cellular-off" color="red.500" my="auto" />
+                );
+            }
         }
 
         return <Pressable onPress={onPress} bg="blueGray.200">
@@ -117,13 +185,12 @@ export default function ServerList() {
                                 {/* Uptime */}
                                 <HStack>
                                     <Icon size="xs" as={MaterialIcons} name="schedule" color="blueGray.500" m="auto" />
-                                    <Text fontSize="xs" color="blueGray.500" m="auto" pl="1" isTruncated>1d 2h 22m</Text>
+                                    <Text fontSize="xs" color="blueGray.500" m="auto" pl="1" isTruncated>{item.uptime}</Text>
                                 </HStack>
                             </HStack>
                         </View>
                         {/* Signal */}
-                        <Icon size="sm" as={MaterialIcons} name="signal-cellular-alt" color="green.500" my="auto" />
-                        {/* <Icon size="sm" as={MaterialIcons} name="signal-cellular-off" color="red.500" my="auto" /> */}
+                        {showStatus()}
                     </HStack>
                 </Box>
             )}

@@ -5,9 +5,10 @@ export default interface ServerInfo {
     port: string,
     username: string,
     password: string,
-    status?: string,
     activePlayers?: string,
     totalPlayers?: string,
     version?: string,
     icon?: string,
+    uptime?: string,
+    status?: "online" | "offline"
 }

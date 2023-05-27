@@ -13,6 +13,7 @@ import PlayerInfo from "../../interfaces/PlayerInfo";
 import axios, { Axios, AxiosResponse } from "axios";
 import PieChart from "react-native-pie-chart";
 import ServerStatus from "../../interfaces/ServerStatus";
+import { testServerConnection } from "../../utils/";
 
 export default function ServerInfoScreen() {
     const params = useSearchParams();
@@ -31,31 +32,12 @@ export default function ServerInfoScreen() {
     const [playersData, setPlayersData] = useState<PlayerInfo[]>(playerList);
     const [serverStatus, setServerStatus] = useState<ServerStatus>({
         tps: [1,1,1],
-        currenetMemory: 1,
+        currentMemory: 1,
         freeMemory: 1,
         maxMemory: 1,
     })
 
     const [refreshing, setRefreshing] = useState(false);
-
-    // test server connection
-    const testServerConnection = (ip = "", port = "") => {
-        return new Promise(async (res, rej) => {
-            if (ip == "" || port == "") { rej(new Error("IP or Port is empty.")) }; 
-
-            let address = `http://${ip}:${port}/test`;
-
-            try {
-                console.log(`Testing server connection at ${address}`)
-                await axios.get(address, {timeout: 10000});
-                console.log(`Server is responding at ${address}`)
-                res(true);
-            } catch (error) {
-                console.error(`Server is not responding at ${address}`)
-                router.push({pathname: "/", params: {toast: "Server is not responding."}})
-            }
-        });
-    }
 
     // get server info from async storage
     const loadServerInfo = async () => {
