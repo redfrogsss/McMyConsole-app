@@ -164,6 +164,10 @@ export default function ServerInfoScreen() {
         }
     }
 
+    const consoleHandler = () => {
+        router.push({ pathname: "/serverInfo/Console", params: { serverInfo: JSON.stringify(serverInfo) } });
+    }
+
     useEffect(()=>{
         // check if id is valid
         if(!id){
@@ -228,7 +232,7 @@ export default function ServerInfoScreen() {
                             <Icon as={MaterialIcons} name="stop" size="lg" color="blueGray.700" mx="auto" />
                             <Text>Shutdown</Text>
                         </Pressable>
-                        <Pressable onPress={() => { }} mx="auto">
+                        <Pressable onPress={() => { consoleHandler() }} mx="auto">
                             <Icon as={MaterialIcons} name="monitor" size="lg" color="blueGray.700" mx="auto" />
                             <Text>Console</Text>
                         </Pressable>
