@@ -11,6 +11,7 @@ export default function AppBar({ enableBack = false }: { enableBack?: boolean })
     <Box safeAreaTop bg="blueGray.200" />
     <HStack bg="blueGray.200" px="1" py="3" justifyContent="space-between" alignItems="center" w="100%">
       <HStack alignItems="center">
+        {/* Left Side of the AppBar */}
         {enableBack ? (
           <IconButton
             icon={<Icon size="lg" as={MaterialIcons} name="arrow-back" color="blueGray.700" />}
@@ -26,9 +27,10 @@ export default function AppBar({ enableBack = false }: { enableBack?: boolean })
           )}
       </HStack>
       <HStack>
-        <IconButton
+        {/* Right Side of the AppBar */}
+        {/* <IconButton
           icon={<Icon as={MaterialIcons} name="more-vert" size="lg" color="blueGray.700" />}
-        />
+        /> */}
       </HStack>
     </HStack>
   </View>;
