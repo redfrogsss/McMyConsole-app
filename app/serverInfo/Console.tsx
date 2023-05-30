@@ -67,7 +67,9 @@ export default function ConsoleScreen () {
             >
                 <AppBar enableBack />
                 <SafeAreaView>
-                    <KeyboardAvoidingView>
+                    <KeyboardAvoidingView
+                        behavior="padding"
+                    >
                         <Box
                             h='full'
                             pb="24"

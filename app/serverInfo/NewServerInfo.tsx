@@ -82,7 +82,9 @@ export default function NewServerInfo() {
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                 >
-                    <KeyboardAvoidingView>
+                    <KeyboardAvoidingView
+                        behavior="position"
+                    >
                         <PageTitle icon="playlist-add" title="Add Server" />
                         <VStack w="full" space={2}>
 
