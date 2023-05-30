@@ -1,5 +1,5 @@
 import { useRouter, useSearchParams } from "expo-router";
-import { NativeBaseProvider, Text, Heading, Toast, View, Image, HStack, IconButton, Icon, Pressable, Box, Divider, FlatList, ScrollView, VStack } from "native-base";
+import { NativeBaseProvider, Text, Heading, Toast, View, Image, HStack, IconButton, Icon, Pressable, Box, Divider, FlatList, ScrollView, VStack, Skeleton } from "native-base";
 import AppBar from "../../components/AppBar";
 import { useCallback, useEffect, useState } from "react";
 import PageTitle from "../../components/PageTitle";
@@ -38,6 +38,7 @@ export default function ServerInfoScreen() {
     })
 
     const [refreshing, setRefreshing] = useState(false);
+    const [showSkeleton, setShowSkeleton] = useState(true);
 
     // get server info from async storage
     const loadServerInfo = async () => {
@@ -73,7 +74,7 @@ export default function ServerInfoScreen() {
                     return;
                 }
                 // test server connection
-                console.log(`passing ${ip} and ${port} to testServerConnection`)
+                // console.log(`passing ${ip} and ${port} to testServerConnection`)
                 await testServerConnection(ip, port);
 
                 // fetch player data 
@@ -178,11 +179,14 @@ export default function ServerInfoScreen() {
         }
 
         setRefreshing(true);
-        loadServerInfo().then((info)=>{
-            fetchServerData(info.ip, info.port).then(()=>{
-                setRefreshing(false);
+        setTimeout(()=>{
+            loadServerInfo().then((info) => {
+                fetchServerData(info.ip, info.port).then(() => {
+                    setRefreshing(false);
+                    setShowSkeleton(false);
+                });
             });
-        });
+        }, 1000)
     }, []);
 
     // debug
@@ -219,12 +223,21 @@ export default function ServerInfoScreen() {
             >
                 <PageTitle icon="info" title="Server Info" />
                 <View py="4" w="full">
-                    <Image source={{ uri: serverInfo.icon ?? sampleIcon }} alt="Server Icon" size="lg" mx="auto" />
-                    <Text fontSize="xl" fontWeight="bold" color="blueGray.700" textAlign="center" py="2">{serverInfo.name}</Text>
+                    {showSkeleton ? <Skeleton height="150" rounded="lg" startColor="blueGray.300" w="50%" mx="auto" py="4"/> : (
+                        <Image source={{ uri: serverInfo.icon ?? sampleIcon }} alt="Server Icon" size="lg" mx="auto" />
+                    )}
+                    
+                    {showSkeleton? <Skeleton.Text rounded="lg" w="50%" startColor="blueGray.300" mx="auto" /> : (
+                        <Text fontSize="xl" fontWeight="bold" color="blueGray.700" textAlign="center" py="2">{serverInfo.name}</Text>
+                    )}
                     <HStack m="auto">
                         <HStack py="2">
-                            <Icon as={MaterialIcons} name="computer" size="md" color="blueGray.700" m="auto" />
-                            <Text fontSize="md" color="blueGray.700" textAlign="center" px="2">{serverInfo.ip}:{serverInfo.port}</Text>
+                            {showSkeleton ? null : (
+                                <>
+                                    <Icon as={MaterialIcons} name="computer" size="md" color="blueGray.700" m="auto" />
+                                    <Text fontSize="md" color="blueGray.700" textAlign="center" px="2">{serverInfo.ip}:{serverInfo.port}</Text>
+                                </>
+                            )}
                         </HStack>
                     </HStack>
                     <HStack justifyContent="space-between" py="4">
@@ -257,28 +270,46 @@ export default function ServerInfoScreen() {
                         >
                             <HStack justifyContent="space-between">
                                 <VStack w="50%">
-                                    <View mx="auto">
-                                    <PieChart
-                                        widthAndHeight={125}
-                                        series={getTPS().series}
-                                        sliceColor={getTPS().sliceColor}
-                                        coverRadius={0.45}
-                                        coverFill={'#FFF'}
-                                    />
-                                    </View>
-                                    <Text mx="auto" my="1">TPS: {serverStatus.tps[0].toFixed(1)} / 20.0</Text>
+                                    {showSkeleton ? (
+                                        <>
+                                            <Skeleton height={150} width={150} rounded="lg" startColor="blueGray.300" />
+                                            <Skeleton.Text rounded="lg" w="50%" startColor="blueGray.300" h="1" lines={1} my="4" mx="auto" />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <View mx="auto">
+                                                <PieChart
+                                                    widthAndHeight={125}
+                                                    series={getTPS().series}
+                                                    sliceColor={getTPS().sliceColor}
+                                                    coverRadius={0.45}
+                                                    coverFill={'#FFF'}
+                                                />
+                                            </View>
+                                            <Text mx="auto" my="1">TPS: {serverStatus.tps[0].toFixed(1)} / 20.0</Text>
+                                        </>
+                                    )}
                                 </VStack>
                                 <VStack w="50%">
-                                    <View mx="auto">
-                                        <PieChart
-                                            widthAndHeight={125}
-                                            series={getRamUsage().series}
-                                            sliceColor={getRamUsage().sliceColor}
-                                            coverRadius={0.45}
-                                            coverFill={'#FFF'}
-                                        />
-                                    </View>
-                                    <Text mx="auto" my="1">RAM: {serverStatus.currentMemory} MB / {serverStatus.maxMemory} MB</Text>
+                                    {showSkeleton ? (
+                                        <>
+                                            <Skeleton height={150} width={150} rounded="lg" startColor="blueGray.300" />
+                                            <Skeleton.Text rounded="lg" w="50%" startColor="blueGray.300" h="1" lines={1} my="4" mx="auto" />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <View mx="auto">
+                                                <PieChart
+                                                    widthAndHeight={125}
+                                                    series={getRamUsage().series}
+                                                    sliceColor={getRamUsage().sliceColor}
+                                                    coverRadius={0.45}
+                                                    coverFill={'#FFF'}
+                                                />
+                                            </View>
+                                            <Text mx="auto" my="1">RAM: {serverStatus.currentMemory} MB / {serverStatus.maxMemory} MB</Text>
+                                        </>
+                                    )}
                                 </VStack>
                             </HStack>
                         </Box>
@@ -297,6 +328,7 @@ export default function ServerInfoScreen() {
                             rounded="xl"
                             p="4"
                         >
+                            {showSkeleton ? <Skeleton.Text rounded="lg" /> : null}
                             {playersData.length > 0 ? (
                                 <FlatList
                                     data={playersData}
