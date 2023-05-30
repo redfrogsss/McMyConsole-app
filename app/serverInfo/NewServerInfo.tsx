@@ -17,7 +17,7 @@ export default function NewServerInfo() {
     const [serverConfig, setServerConfig] = useState<ServerInfo>({
         name: "",
         ip: "",
-        port: "25565",
+        port: "8003",
         username: "",
         password: ""
     });
@@ -118,10 +118,10 @@ export default function NewServerInfo() {
 
                             <Box bg="white" mx="4" my="1" p="4" rounded="xl">
                                 <FormControl isInvalid={invalidFields.includes("port")} w="full" mx="auto">
-                                    <FormControl.Label>Port</FormControl.Label>
+                                    <FormControl.Label>McMyConsole's Port</FormControl.Label>
                                     <Input
-                                        placeholder="25565"
-                                        defaultValue="25565"
+                                        placeholder="8003"
+                                        defaultValue="8003"
                                         keyboardType="numeric"
                                         value={serverConfig.port.toString()}
                                         onChangeText={(value) => { setServerConfig({ ...serverConfig, port: value }) }}
