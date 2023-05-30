@@ -1,11 +1,12 @@
-import { Box, FlatList, KeyboardAvoidingView, NativeBaseProvider, ScrollView, Text, Toast, View } from "native-base";
+import { Box, FlatList, Input, KeyboardAvoidingView, NativeBaseProvider, ScrollView, Text, Toast, View } from "native-base";
 import PageTitle from "../../components/PageTitle";
 import AppBar from "../../components/AppBar";
 import { useRouter, useSearchParams } from "expo-router";
 import ServerInfo from "../../interfaces/ServerInfo";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import { RefreshControl, SafeAreaView } from "react-native";
+import { RefreshControl, SafeAreaView, TextInput } from "react-native";
+import CommandInput from "../../components/console/CommandInput";
 
 export default function ConsoleScreen () {
 
@@ -34,8 +35,16 @@ export default function ConsoleScreen () {
         fetchConsoleLogs();
     }, []);
 
-    // debug
-    // useEffect(()=>{console.log("consoleLogs", consoleLogs)}, [consoleLogs])
+      // update console log every second
+    useEffect(() => {
+        fetchConsoleLogs();
+
+        const interval = setInterval(() => {
+            fetchConsoleLogs();
+        }, 1000);
+
+        return () => clearInterval(interval); // This represents the unmount function, in which you need to clear your interval to prevent memory leaks.
+    }, [])
 
     const renderItem = ({ item, index }: { item: string, index: number }) => {
         return (
@@ -59,20 +68,28 @@ export default function ConsoleScreen () {
                 <AppBar enableBack />
                 <SafeAreaView>
                     <KeyboardAvoidingView>
-                        {/* <PageTitle icon="computer" title="Server Console" /> */}
                         <Box
                             h='full'
                             pb="24"
                             backgroundColor='blueGray.900'
                             safeArea
                         >
-                        <FlatList
-                            data={consoleLogs.reverse()}
-                            keyExtractor={(item, index) => index.toString()}
-                            showsVerticalScrollIndicator={false}
-                            renderItem={renderItem}
-                            inverted={true}
-                        />
+                            <FlatList
+                                data={consoleLogs.reverse()}
+                                keyExtractor={(item, index) => index.toString()}
+                                showsVerticalScrollIndicator={false}
+                                renderItem={renderItem}
+                                inverted={true}
+                            />
+                            <View
+                                px="4"
+                                py="2"
+                            >
+                                <CommandInput 
+                                serverInfo={serverInfo}
+                                afterExecution={fetchConsoleLogs}
+                                />
+                            </View>
                         </Box>
                     </KeyboardAvoidingView>
                 </SafeAreaView>
