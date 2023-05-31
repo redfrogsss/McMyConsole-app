@@ -2,14 +2,19 @@ import { Image, Text, HStack, IconButton, Icon, Menu, Pressable, HamburgerIcon, 
 import PlayerInfo from "../../interfaces/PlayerInfo";
 import { MaterialIcons } from '@expo/vector-icons';
 import axios from "axios";
+import ServerInfo from "../../interfaces/ServerInfo";
 
-export default function PlayerListItem({ player, serverAddress, onRefresh }: { player: PlayerInfo, serverAddress: string, onRefresh: () => void }) {
+export default function PlayerListItem({ player, serverInfo, onRefresh }: { player: PlayerInfo, serverInfo: ServerInfo, onRefresh: () => void }) {
+
+    const serverAddress = `http://${serverInfo.ip}:${serverInfo.port}`;
 
     const actionHandler = async (player: PlayerInfo, action: "kick" | "ban" | "ban-ip", serverAddress: string) => {
         
         const data = {
             player: player.name,
-            action: action
+            action: action,
+            username: serverInfo.username,
+            password: serverInfo.password
         }
 
         try {

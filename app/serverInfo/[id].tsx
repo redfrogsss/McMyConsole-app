@@ -137,7 +137,7 @@ export default function ServerInfoScreen() {
 
     const shutdownHandler = async () => {
         try {
-            await axios.get(`http://${serverInfo.ip}:${serverInfo.port}/shutdown`);
+            await axios.post(`http://${serverInfo.ip}:${serverInfo.port}/shutdown`, {username: serverInfo.username, password: serverInfo.password});
             Toast.show({
                 title: "Server is shutting down.",
             });
@@ -333,7 +333,7 @@ export default function ServerInfoScreen() {
                                 <FlatList
                                     data={playersData}
                                     keyExtractor={(item, index) => index.toString()}
-                                    renderItem={({ item }) => <PlayerListItem player={item} serverAddress={`http://${serverInfo.ip}:${serverInfo.port}`} onRefresh={onRefresh} />}
+                                    renderItem={({ item }) => <PlayerListItem player={item} serverInfo={serverInfo} onRefresh={onRefresh} />}
                                     ItemSeparatorComponent={() => (
                                         <Divider my="2" _light={{
                                             bg: "blueGray.600"

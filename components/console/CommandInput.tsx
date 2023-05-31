@@ -14,8 +14,13 @@ export default function CommandInput({serverInfo, afterExecution}: {serverInfo: 
     const onCommandSubmit = async () => {
         try {
             setCommand("");
-            await axios.post(`http://${serverInfo.ip}:${serverInfo.port}/command`, { command: command });
-            console.log("command sent");
+            
+            const data = {
+                command: command,
+                username: serverInfo.username,
+                password: serverInfo.password
+            }
+            await axios.post(`http://${serverInfo.ip}:${serverInfo.port}/command`, data);
             
             if (afterExecution) afterExecution();
         } catch (error) {
