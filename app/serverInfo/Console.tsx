@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "expo-router";
 import ServerInfo from "../../interfaces/ServerInfo";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import { RefreshControl, SafeAreaView, TextInput } from "react-native";
+import { Platform, RefreshControl, SafeAreaView, TextInput } from "react-native";
 import CommandInput from "../../components/console/CommandInput";
 
 export default function ConsoleScreen () {
@@ -68,7 +68,7 @@ export default function ConsoleScreen () {
                 <AppBar enableBack />
                 <SafeAreaView>
                     <KeyboardAvoidingView
-                        behavior="padding"
+                        behavior={Platform.OS === "ios" ? "padding" : "height"}
                     >
                         <Box
                             h='full'

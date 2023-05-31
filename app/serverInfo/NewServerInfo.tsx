@@ -7,6 +7,7 @@ import ToastAlert from "../../components/ToastAlert";
 import { useRouter } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ServerInfo from "../../interfaces/ServerInfo";
+import { Platform } from "react-native";
 
 
 export default function NewServerInfo() {
@@ -83,7 +84,7 @@ export default function NewServerInfo() {
                     showsVerticalScrollIndicator={false}
                 >
                     <KeyboardAvoidingView
-                        behavior="position"
+                        behavior={Platform.OS === "ios" ? "position" : "padding"}
                     >
                         <PageTitle icon="playlist-add" title="Add Server" />
                         <VStack w="full" space={2}>
