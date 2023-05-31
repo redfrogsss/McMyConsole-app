@@ -1,13 +1,14 @@
 import { Box, Button, FormControl, Icon, Input, KeyboardAvoidingView, NativeBaseProvider, ScrollView, Text, VStack, View } from "native-base";
 import AppBar from "../../components/AppBar";
 import PageTitle from "../../components/PageTitle";
-import { MaterialIcons, Ionicons, Entypo, AntDesign } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
 import ToastAlert from "../../components/ToastAlert";
 import { useRouter } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ServerInfo from "../../interfaces/ServerInfo";
 import { Platform } from "react-native";
+import DefaultServerIcon from "../../components/DefaultServerIcon";
 
 
 export default function NewServerInfo() {
@@ -20,7 +21,8 @@ export default function NewServerInfo() {
         ip: "",
         port: "8003",
         username: "",
-        password: ""
+        password: "",
+        icon: DefaultServerIcon
     });
 
     const [invalidFields, setInvalidFields] = useState<string[]>([]); // ["name", "ip", "port", "username", "password"

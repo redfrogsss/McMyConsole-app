@@ -44,7 +44,7 @@ export default function PlayerListItem({ player, serverInfo, onRefresh }: { play
     return (
         <HStack justifyContent="space-between">
             <HStack>
-                <Image source={{ uri: player.icon }} alt="Player Icon" size="xs" mx="auto" my="auto" />
+                <Image source={{ uri: player.icon }} alt="Player Icon" size="xs" mx="auto" my="auto" rounded="lg" />
                 <Text fontSize="sm" fontWeight="bold" color="blueGray.700" textAlign="left" pl="4" my="auto">{player.name}</Text>
             </HStack>
 

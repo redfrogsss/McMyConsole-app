@@ -3,7 +3,6 @@ import { NativeBaseProvider, Text, Heading, Toast, View, Image, HStack, IconButt
 import AppBar from "../../components/AppBar";
 import { useCallback, useEffect, useState } from "react";
 import PageTitle from "../../components/PageTitle";
-import { playerList, sampleIcon } from "../../components/DummyData";
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 import PlayerListItem from "../../components/serverInfo/PlayerListItem";
 import { RefreshControl } from "react-native";
@@ -14,6 +13,7 @@ import axios, { Axios, AxiosResponse } from "axios";
 import PieChart from "react-native-pie-chart";
 import ServerStatus from "../../interfaces/ServerStatus";
 import { testServerConnection } from "../../utils/";
+import DefaultServerIcon from "../../components/DefaultServerIcon";
 
 export default function ServerInfoScreen() {
     const params = useSearchParams();
@@ -29,7 +29,7 @@ export default function ServerInfoScreen() {
         password: "",
     });
 
-    const [playersData, setPlayersData] = useState<PlayerInfo[]>(playerList);
+    const [playersData, setPlayersData] = useState<PlayerInfo[]>([]);
     const [serverStatus, setServerStatus] = useState<ServerStatus>({
         tps: [1,1,1],
         currentMemory: 1,
@@ -84,7 +84,7 @@ export default function ServerInfoScreen() {
                 let playerListData: PlayerInfo[] = playerListRawData.data.playerList.map((player: any) => {
                     let playerInfo: PlayerInfo = {
                         name: player,
-                        icon: `https://minotar.net/avatar/${player}/64` ?? sampleIcon
+                        icon: `https://minotar.net/avatar/${player}/64` ?? "https://minotar.net/avatar/steve/64" ?? DefaultServerIcon
                     }
                     return playerInfo;
                 });
@@ -208,6 +208,9 @@ export default function ServerInfoScreen() {
         return {series, sliceColor};
     }
 
+    // debug
+    useEffect(() => {console.log("serverInfo: ",serverInfo)}, [serverInfo]);
+
     return <NativeBaseProvider>
         <View
             flex={1}
@@ -224,7 +227,7 @@ export default function ServerInfoScreen() {
                 <PageTitle icon="info" title="Server Info" />
                 <View py="4" w="full">
                     {showSkeleton ? <Skeleton height="150" rounded="lg" startColor="blueGray.300" w="50%" mx="auto" py="4"/> : (
-                        <Image source={{ uri: serverInfo.icon ?? sampleIcon }} alt="Server Icon" size="lg" mx="auto" />
+                        <Image source={{ uri: serverInfo.icon ?? DefaultServerIcon }} alt="Server Icon" size="lg" mx="auto" rounded="lg" />
                     )}
                     
                     {showSkeleton? <Skeleton.Text rounded="lg" w="50%" startColor="blueGray.300" mx="auto" /> : (

@@ -3,13 +3,13 @@ import { MaterialIcons, Ionicons, Entypo } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import PageTitle from "../PageTitle";
 import { useCallback, useEffect, useState } from "react";
-import { ListRenderItemInfo, RefreshControl } from "react-native";
+import { ImageSourcePropType, ListRenderItemInfo, RefreshControl } from "react-native";
 import { RowMap, SwipeListView } from "react-native-swipe-list-view";
 import ServerInfo from "../../interfaces/ServerInfo";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { testServerConnection } from "../../utils";
 import axios from "axios";
-import { sampleIcon } from "../DummyData";
+import DefaultServerIcon from "../DefaultServerIcon";
 
 export default function ServerList() {
 
@@ -41,6 +41,17 @@ export default function ServerList() {
         })
     }
 
+    const saveServerList = async (list: ServerInfo[]) => {
+        return new Promise(async (res, rej) => {
+            try {
+                await AsyncStorage.setItem("serverList", JSON.stringify(list));
+                res(true);
+            } catch (error) {
+                rej(error);
+            }
+        })
+    }
+
     const fetchServerData = async () => {
         let list = await loadServerList()
         setListData(list);
@@ -48,7 +59,6 @@ export default function ServerList() {
         // show refresh indicator
         setRefreshing(true);
 
-        // test connection
         for (let i = 0; i < list.length; i++) {
             let item = list[i];
             try {
@@ -59,7 +69,7 @@ export default function ServerList() {
                 item.activePlayers = serverInfoData.data.activePlayers;
                 item.totalPlayers = serverInfoData.data.totalPlayers;
                 item.version = serverInfoData.data.version;
-                item.icon = serverInfoData.data.icon? "data:image/png;base64," + serverInfoData.data.icon : sampleIcon;
+                item.icon = serverInfoData.data.icon? "data:image/png;base64," + serverInfoData.data.icon : DefaultServerIcon;
                 item.uptime = serverInfoData.data.uptime;
                 
             } catch (error) {
@@ -72,6 +82,7 @@ export default function ServerList() {
         }
 
         setListData(list);
+        saveServerList(list);
 
         // hide refresh indicator
         setRefreshing(false);
@@ -160,7 +171,7 @@ export default function ServerList() {
                 >
                     <HStack justifyContent="space-between" maxW="full">
                         {/* Icon */}
-                        <Image source={{ uri: item.icon }} alt="Server Icon" size="sm" my="auto" w="20%" />
+                        <Image source={{ uri: item.icon }} alt="Server Icon" size="sm" my="auto" w="20%" rounded="lg" />
                         <View px="4" textAlign="left" w="75%">
                             {/* Server Name */}
                             <Text fontSize="lg" fontWeight="bold">{item.name}</Text>
