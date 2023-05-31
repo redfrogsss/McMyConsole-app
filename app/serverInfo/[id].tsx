@@ -64,13 +64,31 @@ export default function ServerInfoScreen() {
         });
     }
 
+    const removeServerInfo = async () => {
+        return new Promise(async (res, rej) => {
+            try {
+                let listData = await AsyncStorage.getItem("serverList");
+                if (listData == null) { rej(); return;}
+
+                let list: ServerInfo[] = JSON.parse(listData);
+                if (id == null || id == undefined) { rej(); return;}
+                list.splice(parseInt(id), 1);
+
+                await AsyncStorage.setItem("serverList", JSON.stringify(list));
+                res(true);
+            } catch (error) {
+                rej(error);
+            }
+        })
+    }
+
     // fetch server data 
-    const fetchServerData = async (ip = "", port = "") => {
+    const fetchServerData = async (ip: string = "", port: string = "") => {
         const serverAddress = `http://${ip}:${port}`;
         let address = `${serverAddress}`;
         return new Promise(async (res, rej) => {
             try {
-                if (ip == "" || port == "") {
+                if (!ip || !port) {
                     return;
                 }
                 // test server connection
@@ -169,6 +187,12 @@ export default function ServerInfoScreen() {
         router.push({ pathname: "/serverInfo/Console", params: { serverInfo: JSON.stringify(serverInfo) } });
     }
 
+    const deleteHandler = () => {
+        removeServerInfo().then(() => {
+            router.push({ pathname: "/", params: { toast: "Server deleted."}});
+        });
+    }
+
     useEffect(()=>{
         // check if id is valid
         if(!id){
@@ -252,7 +276,7 @@ export default function ServerInfoScreen() {
                             <Icon as={MaterialIcons} name="monitor" size="lg" color="blueGray.700" mx="auto" />
                             <Text>Console</Text>
                         </Pressable>
-                        <Pressable onPress={() => { }} mx="auto">
+                        <Pressable onPress={() => { deleteHandler() }} mx="auto">
                             <Icon as={MaterialIcons} name="delete" size="lg" color="blueGray.700" mx="auto" />
                             <Text>Delete</Text>
                         </Pressable>
