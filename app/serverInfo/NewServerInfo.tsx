@@ -86,7 +86,7 @@ export default function NewServerInfo() {
                     showsVerticalScrollIndicator={false}
                 >
                     <KeyboardAvoidingView
-                        behavior={Platform.OS === "ios" ? "position" : "padding"}
+                        behavior={Platform.OS === "ios" ? "padding" : "padding"}
                     >
                         <PageTitle icon="playlist-add" title="Add Server" />
                         <VStack w="full" space={2}>
@@ -168,7 +168,7 @@ export default function NewServerInfo() {
                                 <Button
                                     w="full"
                                     mx="auto"
-                                    mb="32"
+                                    mb="16"
                                     rounded="xl"
                                     onPress={onSubmitHandler}
                                 >
