@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "McMyConsole-app",
+    "slug": "McMyConsole-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/appicon/appstore.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "fan.jacky.McMyConsoleApp"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/appicon/playstore.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "fan.jacky.McMyConsoleApp"
+    },
+    "web": {
+      "favicon": "./assets/appicon/playstore.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "eb7abcdb-4b75-42a8-91d8-2367dabf219e"
+      }
+    }
+  }
+}
