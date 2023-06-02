@@ -4,7 +4,7 @@
     "slug": "McMyConsole-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/appicon/appstore.png",
+    "icon": "./assets/appicon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -22,7 +22,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/appicon/playstore.png",
+        "foregroundImage": "./assets/appicon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "fan.jacky.McMyConsoleApp"
