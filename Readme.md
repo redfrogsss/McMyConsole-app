@@ -22,10 +22,26 @@ This app uses the [McMyConsole Plugin](https://www.mcmyadmin.com/) API to commun
 
 ## 📱 Screenshots
 <!-- Screenshots -->
-![Home](./readme-img/home.png)
-![New Info](./readme-img/newinfo.png)
-![Server Info](./readme-img/server.png)
-![Console](./readme-img/console.png)
+
+<table style="height: 120px">
+  <tr>
+    <td>
+      <img src="./readme-img/home.png" alt="Home Screen" />
+    </td>
+    <td>
+      <img src="./readme-img/newinfo.png" alt="New Info" />
+    </td>
+  </tr>
+    <tr>
+    <td>
+      <img src="./readme-img/server.png" />
+    </td>
+    <td>
+      <img src="./readme-img/console.png" alt="Console" />
+    </td>
+  </tr>
+</table>
+  
 ## Learn More
 This project uses the following technologies:
 - [Expo](https://expo.dev/)
