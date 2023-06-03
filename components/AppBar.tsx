@@ -25,18 +25,25 @@ export default function AppBar({ enableBack = false }: { enableBack?: boolean })
             // <IconButton
             //   icon={<Icon size="lg" as={MaterialIcons} name="menu" color="blueGray.700" />}
             // />
-        <Menu w="190" trigger={triggerProps => {
-          return <Pressable accessibilityLabel="More options menu" {...triggerProps}>
-            <Icon as={MaterialIcons} name="menu" size="lg" color="blueGray.700" mx="3"/>
-          </Pressable>;
-        }}>
-          <Menu.Item onPress={()=>{Linking.openURL("https://github.com/redfrogsss/McMyConsole-app")}}>About McMyConsole</Menu.Item>
-        </Menu>
+        // <Menu w="190" trigger={triggerProps => {
+        //   return <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+        //     <Icon as={MaterialIcons} name="menu" size="lg" color="blueGray.700" mx="3"/>
+        //   </Pressable>;
+        // }}>
+        //   <Menu.Item onPress={()=>{Linking.openURL("https://github.com/redfrogsss/McMyConsole-app")}}>About McMyConsole</Menu.Item>
+        // </Menu>
+        <></>
           )}
       </HStack>
       <HStack>
         {/* Right Side of the AppBar */}
-        <></>
+        <Menu w="190" trigger={triggerProps => {
+          return <Pressable accessibilityLabel="More options menu" {...triggerProps}>
+            <Icon as={MaterialIcons} name="more-vert" size="lg" color="blueGray.700" mx="3"/>
+          </Pressable>;
+        }}>
+          <Menu.Item onPress={()=>{Linking.openURL("https://github.com/redfrogsss/McMyConsole-app")}}>About McMyConsole</Menu.Item>
+        </Menu>
       </HStack>
     </HStack>
   </View>;
