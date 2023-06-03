@@ -299,7 +299,9 @@ export default function ServerInfoScreen() {
                                 <VStack w="50%">
                                     {showSkeleton ? (
                                         <>
-                                            <Skeleton height={150} width={150} rounded="lg" startColor="blueGray.300" />
+                                            <View mx="auto">
+                                                <Skeleton height={125} width={125} rounded="lg" startColor="blueGray.300" />
+                                            </View>
                                             <Skeleton.Text rounded="lg" w="50%" startColor="blueGray.300" h="1" lines={1} my="4" mx="auto" />
                                         </>
                                     ) : (
@@ -320,7 +322,9 @@ export default function ServerInfoScreen() {
                                 <VStack w="50%">
                                     {showSkeleton ? (
                                         <>
-                                            <Skeleton height={150} width={150} rounded="lg" startColor="blueGray.300" />
+                                            <View mx="auto">
+                                                <Skeleton height={125} width={125} rounded="lg" startColor="blueGray.300" />
+                                            </View>
                                             <Skeleton.Text rounded="lg" w="50%" startColor="blueGray.300" h="1" lines={1} my="4" mx="auto" />
                                         </>
                                     ) : (
