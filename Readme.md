@@ -1,6 +1,6 @@
 # 🛠️ McMyConsole - Minecraft Server Manager
 
-**McMyConsole** is a mobile app that allows you to manage your Minecraft server from your phone. 
+**McMyConsole** is a mobile app that allows you to monitor and manage your Minecraft server from your phone. 
 
 \* This app is still in development.
 
@@ -12,7 +12,7 @@
 
 
 ## ✨ Features
-This app aims to control and manage several small-scale Minecraft server from your phone. 
+This app aims to monitor and manage several small-scale Minecraft server from your phone. 
 
 Key features:
 - [x] Manage multiple servers
@@ -21,7 +21,7 @@ Key features:
 - [ ] etc.
 
 ## 💭 How it works
-This app uses the [McMyConsole Plugin](https://www.mcmyadmin.com/) API to communicate with the server. Then, the plugin uses the Bukkit API to manage the server.
+This app uses the McMyConsole Plugin API to communicate with the server. Then, the plugin uses the Bukkit API to manage the server.
 
 ## 📱 Screenshots
 <!-- Screenshots -->
