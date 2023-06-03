@@ -2,6 +2,9 @@
 
 **McMyConsole** is a mobile app that allows you to manage your Minecraft server from your phone. 
 
+\* This app is still in development.
+
+
 <!-- Thumbnails -->
 
 <!-- App Store Links -->
